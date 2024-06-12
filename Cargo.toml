@@ -1,0 +1,48 @@
+[package]
+name = "gateway"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+#sea-orm = { version = "^0.12.0", features = [ "sqlx-postgres", "runtime-async-std-native-tls", "macros" ,"with-json"] }
+sea-orm = { version = "^0.12.0", features = [ "sqlx-postgres", "runtime-async-std-native-tls", "macros", "mock" ] }
+dotenv = "0.15.0"
+tonic = "0.8"
+tokio = { version = "1.24", features = ["macros", "rt-multi-thread", "rt"] }
+tokio-stream = { version = "0.1", features = ["net"] }
+futures = "0.3"
+clap = { version = "4.1.4", features = ["derive"] }
+tonic-reflection = "0.6.0"
+serde_json = "1.0.116"
+axum = { version = "0.7.5" }
+axum-extra = { version = "0.9", features = ["typed-header"] }
+axum_cors = "0.1.4"
+serde = { version = "1.0.198", features = ["derive"] }
+http = "1.1.0"
+tower-http = { version = "0.5.2", features = ["cors"] }
+prost = "0.12.6"
+bytes = "1.6.0"
+reqwest = { version = "0.12", features = ["json"] }
+hex = "0.4.3"
+chrono = "0.4.38"
+time = "0.3.36"
+async-trait = "0.1.80"
+async-std = { version = "1", features = ["attributes", "tokio1"] }
+sea-orm-migration = "0.12.15"
+log = "0.4.21"
+env_logger = "0.9"
+log4rs = "1.0"
+
+
+[build-dependencies]
+prost-build = "0.12.6"
+sea-orm-migration = "0.12.15"
+
+
+[[bin]]
+name = "migration"
+path = "src/bin/migrate_db.rs"
+
+[[bin]]
+name = "restful-server"
+path = "src/bin/restful.rs"

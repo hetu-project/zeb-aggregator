@@ -1,0 +1,99 @@
+syntax = "proto3";
+
+package bussiness;
+
+message Clock {
+    map<string, uint64> values = 1;
+}
+
+message ClockInfo {
+    Clock clock = 1;
+    bytes node_id = 2;
+    bytes clock_hash = 3;
+    bytes message_id = 4;
+    uint64 count = 5;
+    uint64 create_at = 6;
+}
+
+message ClockInfos {
+    repeated ClockInfo clock_infos = 1;
+}
+
+// business data
+// ZMessage.type = Z_TYPE_CHAT
+message ZChat {
+    bytes message_data = 1;
+    ClockInfo clock = 2;
+}
+
+// ZMessage.type = Z_TYPE_HPOINTS
+message HPoints {
+    bytes op_address = 1;
+    bytes event_id = 2;
+    uint64 points = 3;  // new points
+}
+
+// ZMessage.type = Z_TYPE_GATEWAY
+// Gateway just only needs read api
+message ZGateway {
+    string request_id = 1;
+    GatewayType type = 2;
+    QueryMethod method = 3;
+    bytes data = 4;
+}
+
+enum GatewayType {
+    GATEWAY_TYPE_CLOCK_NODE = 0;
+    GATEWAY_TYPE_MERGE_LOG = 1;   // ref merge log
+    GATEWAY_TYPE_NODE_INFO = 2;  // heartbeat or node info
+    GATEWAY_TYPE_Z_MESSAGE = 3;  // p2p message
+}
+
+enum QueryMethod {
+    QUERY_BY_MSGID = 0;
+    QUERY_BY_TABLE_KEYID = 1;
+    QUERY_STATUS = 2;
+}
+
+// ZGateway.type = GATEWAY_TYPE_CLOCK_NODE
+message ClockNode {
+    Clock clock = 1;
+    bytes id = 2;
+    bytes message_id = 3;
+    uint64 count = 4;
+    uint64 create_at = 5;
+    bytes raw_message = 6;
+}
+
+message ClockNodes {
+    repeated ClockNode clock_nodes = 1;
+}
+
+// ZGateway.type = GATEWAY_TYPE_NODE_INFO
+message NodeInfo {
+    repeated string node_ids = 1;
+}
+
+message QueryResponse {
+    string request_id = 1;
+    bool success = 2;
+    string reason = 3;
+    bytes data = 4;
+}
+
+// ZGateway.method = QUERY_BY_MSGID
+message QueryByMsgID {
+    string msg_id = 1;
+}
+
+// ZGateway.method = QUERY_BY_TABLE_KEYID
+message QueryByTableKeyID {
+    uint64 last_pos = 1;
+}
+
+// ZGateway.method = QUERY_STATUS
+message QueryStatus {
+    uint64 clock_total = 1;
+    uint64 mergelog_total = 2;
+    uint64 zmessage_total = 3;
+}

@@ -1,0 +1,75 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+package gateway;
+
+service Gateway {
+
+    rpc NodeList(google.protobuf.Empty) returns (NodesOverviewResponse);
+
+
+    rpc NodeDetail(NodeId) returns (NodeDetailResponse);
+
+
+    rpc MessageDetail(MessageId) returns (MessageDetailResponse);
+}
+
+//message NeighborNodes {
+//    repeated string neighbor_node_ids = 1;
+//}
+
+message Node {
+    string node_id = 1;
+    repeated string neighbor_nodes = 2;
+    bool is_alive = 3;
+    string rpc_domain =4;
+    uint32 rpc_port =5;
+    string ws_domain =6;
+    uint32 ws_port =7;
+}
+
+message NodesOverviewResponse {
+    repeated Node nodes =1;
+    uint32 total_node_count =2;
+    uint32 total_message_count =3;
+}
+
+
+message NodeId {
+    string node_id = 1;
+}
+
+message MessageInfo {
+    string message_id = 1;
+    string from_addr = 2;
+    string to_addr = 3;
+}
+
+message NodeDetailResponse {
+    string node_id = 1;
+    bool is_alive = 2;
+    map<string ,int32 > clock =3;
+    repeated MessageInfo message_list = 4;
+}
+
+message MessageId {
+    string message_id = 1;
+}
+
+enum ZType {
+    Z_TYPE_RNG = 0;
+    Z_TYPE_EVENT = 1;
+    Z_TYPE_CLOCK = 2;
+    Z_TYPE_GATEWAY = 3;
+    Z_TYPE_ZCHAT = 4;
+}
+
+
+message MessageDetailResponse {
+    string message_id = 1;
+    string from_addr = 2;
+    string to_addr = 3;
+    repeated string clock_json_str_list =4;
+    ZType message_type = 5;
+    bytes message_data = 6;
+    bytes signature = 7;
+}
